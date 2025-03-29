@@ -1,19 +1,7 @@
-<<<<<<< HEAD
-import pytesseract 
-from PIL import Image 
-import requests 
-import io
-
-response = requests.get('https://i.sstatic.net/J2ojU.png') 
-img = Image.open(io.BytesIO(response.content))
-text = pytesseract.image_to_string(img, lang='eng', config='--psm 7')
-
-print(text)
-=======
 import cv2
-import pytesseract as ptr
+import pytesseract
 
-ptr.pytesseract.tesseract_cmd = "C:/Program Files/Tesseract-OCR/tesseract.exe"
+pytesseract.pytesseract.tesseract_cmd = "C:/Program Files/Tesseract-OCR/tesseract.exe"
 
 img = cv2.imread('./tests/script.png')
 
@@ -44,11 +32,10 @@ for cnt in contours:
     
     file = open("recognized.txt", "a")
     
-    text = ptr.image_to_string(cropped)
+    text = pytesseract.image_to_string(cropped)
     
     file.write(text)
     file.write("\n")
     
     file.close()
->>>>>>> 54c1f1c55f1bb5569545ab33c65e44a1069e4824
 
