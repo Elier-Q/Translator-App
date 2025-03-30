@@ -3,6 +3,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import Base64Bytes
 from typing import List
+import service_test
+
 
 app = FastAPI()
 
@@ -16,15 +18,9 @@ app.add_middleware(CORSMiddleware ,
                    allow_methods=["*"] , 
                    allow_headers=["*"])
 
-
-@app.get('/feed') #RETURN SOMETHING
-def get_feed():
-    return None 
-
-
-@app.get("/feed" , response_model=ExpoCamera)
-def get_feed():
-    return None
+@app.post('/image')
+def post_image():
+    return service_test.get_image()
 
 
 if __name__ == "__main__":
