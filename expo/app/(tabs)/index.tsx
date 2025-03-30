@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import {usePermissions} from 'expo-media-library'
 import { useCameraPermissions, useMicrophonePermissions } from 'expo-camera';
 import {router} from 'expo-router'
+import 'expo-dev-client';
 
 export default function HomeScreen() {
   const [cameraPermissions, requestCameraPermission] = useCameraPermissions();
@@ -22,8 +23,8 @@ export default function HomeScreen() {
   async function requestAllPerms(){
     const cameraStatus = await requestCameraPermission();
     const micStatus = await requestMicrophonePermission();
-    //const medLibStatus = await requestMediaLibraryPermission();
-    if(!cameraStatus.granted || !micStatus.granted ){//|| !medLibStatus.granted
+    const medLibStatus = await requestMediaLibraryPermission();
+    if(!cameraStatus.granted || !micStatus.granted || !medLibStatus.granted){//|| !medLibStatus.granted
       Alert.alert("Error", "All Permission Required");
       return false;
     }
