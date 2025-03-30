@@ -3,7 +3,7 @@ import pytesseract
 
 pytesseract.pytesseract.tesseract_cmd = "C:/Program Files/Tesseract-OCR/tesseract.exe"
 
-img = cv2.imread('transapp/tests/script.png')
+img = cv2.imread('transapp/tests/stop.png')
 
 gray = cv2.cvtColor(img , cv2.COLOR_BGR2GRAY)
 
