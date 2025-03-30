@@ -3,24 +3,24 @@ from fastapi import FastAPI , File , UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import Base64Bytes
 from typing import List
-import service_test
+import transapp.backend.service.service as service
 
 
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000" #CHANGE THIS TO MATCH THE SERVER
+    "http://127.0.0.1:8000"
 ]
 
 app.add_middleware(CORSMiddleware , 
-                   allow_origins=origins , 
+                   allow_origins=["*"] , 
                    allow_credentials=True , 
                    allow_methods=["*"] , 
                    allow_headers=["*"])
 
 @app.post('/image')
 async def post_image(file: UploadFile = File()):
-    return service_test.process_image()
+    return await service.process_image(file)
 
 
 if __name__ == "__main__":
