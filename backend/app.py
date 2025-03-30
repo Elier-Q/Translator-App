@@ -27,7 +27,7 @@ async def post_feed(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
-            frame = await websocket.recv_frame()
+            frame = await websocket.recv()
             text = service.process_feed(frame)
             await websocket.send_text(text)
     except websocket.close:
