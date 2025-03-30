@@ -8,17 +8,12 @@ import io
 
 async def process_image(file: UploadFile = File()):
 
-    content = file.read()
-    image = Image.open(io.BytesIO(content))
+    content = await file.read()
+    image = np.array(Image.open(io.BytesIO(content)))
 
-    gray_frame = np.ascontiguousarray(cv2.cvtcolor(image , cv2.COLOR_BGR2GRAY) , dtype=uint8)
+    gray_frame = np.ascontiguousarray(cv2.cvtColor(image , cv2.COLOR_BGR2GRAY) , dtype=np.uint8)
 
     text = pytesseract.image_to_string(gray_frame)
 
     return text
-
-    
-
-
-
 

@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI , File , UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import Base64Bytes
 from typing import List
@@ -19,8 +19,8 @@ app.add_middleware(CORSMiddleware ,
                    allow_headers=["*"])
 
 @app.post('/image')
-def post_image():
-    return service_test.get_image()
+async def post_image(file: UploadFile = File()):
+    return service_test.process_image()
 
 
 if __name__ == "__main__":
