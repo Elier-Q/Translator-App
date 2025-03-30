@@ -1,20 +1,23 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View} from "react-native";
 import IconButton from "./IconButtons";
 import { ThemedText } from "./ThemedText";
+import { ThemedView } from "./ThemedView";
 import { CameraMode } from "expo-camera";
 
 export default function BottomRowTools(){
     return(
-        <View>
+        <View style={[styles.bottomContainer,styles.directionRowItemsCenter]}>
             <IconButton
                 iosName="photo.stack"
                 onPress = {() => {}}
             />
-            <View>
-            <TouchableOpacity onPress={() => {}}> 
+            <ThemedView>
+            <TouchableOpacity onPress={() => {
+                console.log("Happy bIRTHDAY")
+            }}> 
                 <ThemedText>Picture</ThemedText>
-            </TouchableOpacity> 
-            </View>
+            </TouchableOpacity>
+            </ThemedView>
         </View>
         
     )
@@ -27,10 +30,10 @@ const styles = StyleSheet.create({
     },
     bottomContainer:{
         width: "100%",
-        justifyContent: "center", 
-        position: "absolute",  
+        justifyContent: "center",
+        position: "absolute",
         alignSelf: "center",
-        bottom: 6,            
+        top: 200,
     },
 
 });

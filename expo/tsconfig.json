@@ -1,8 +1,13 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true,
-    "paths": {
+    "target": "ES6",
+      "module": "commonjs",
+      "strict": true,//before here
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+    "paths": {//new code ends before this line except strict
       "@/*": [
         "./*"
       ]
