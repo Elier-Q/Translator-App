@@ -24,7 +24,7 @@ export default function HomeScreen() {
     const cameraStatus = await requestCameraPermission();
     const micStatus = await requestMicrophonePermission();
     const medLibStatus = await requestMediaLibraryPermission();
-    if(!cameraStatus.granted || !micStatus.granted || !medLibStatus.granted){//|| !medLibStatus.granted
+    if(!cameraStatus.granted || !micStatus.granted || !medLibStatus.granted){
       Alert.alert("Error", "All Permission Required");
       return false;
     }
