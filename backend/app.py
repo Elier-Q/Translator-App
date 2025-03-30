@@ -3,7 +3,8 @@ from fastapi import FastAPI , File , UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import Base64Bytes
 from typing import List
-import transapp.backend.service.service as service
+import serviceimpl.service as service
+from websocket import WebSocket
 
 
 app = FastAPI()
@@ -11,7 +12,6 @@ app = FastAPI()
 origins = [
     "http://127.0.0.1:8000"
 ]
-
 app.add_middleware(CORSMiddleware , 
                    allow_origins=["*"] , 
                    allow_credentials=True , 
@@ -21,6 +21,17 @@ app.add_middleware(CORSMiddleware ,
 @app.post('/image')
 async def post_image(file: UploadFile = File()):
     return await service.process_image(file)
+
+@app.websocket('/ws')
+async def post_feed(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            frame = await websocket.recv_frame()
+            text = service.process_feed(frame)
+            await websocket.send_text(text)
+    except websocket.close:
+        print("Disconnect")
 
 
 if __name__ == "__main__":

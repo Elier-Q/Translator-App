@@ -4,6 +4,7 @@ import pytesseract
 from PIL import Image
 from fastapi import File , UploadFile
 import io
+from websocket import WebSocket
 
 async def process_image(file: UploadFile = File()):
 
@@ -15,4 +16,15 @@ async def process_image(file: UploadFile = File()):
     text = pytesseract.image_to_string(gray_frame)
 
     return text
+
+async def process_feed(image_bytes: bytes):
+
+    image = np.array(Image.open(io.BytesIO(image_bytes)))
+
+    gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    text = pytesseract.image_to_string(gray_frame)
+
+    return text
+
 
