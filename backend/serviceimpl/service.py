@@ -70,6 +70,7 @@ async def process_image_file(file: UploadFile):
 
         # Flip image horizontally
         img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+        img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
 
         # Convert to NumPy array
         image = np.ascontiguousarray(img)
