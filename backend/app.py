@@ -5,7 +5,10 @@ from pydantic import Base64Bytes
 from typing import List
 import serviceimpl.service as service
 from starlette.websockets import WebSocket
+from fastapi import HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+import logging
 
 
 app = FastAPI()
@@ -28,9 +31,18 @@ class ImageRequest(BaseModel):
 @app.post('/image-uri')
 async def post_image_uri(request: ImageRequest):
     return await service.process_image_uri(uri=request.uri)
+
 @app.post('/image-file')
-async def post_image_file(file: UploadFile = File()):
-    return await service.process_image_file(file)
+async def post_image_file(file: UploadFile = File(...)):
+    try:
+        logging.info(f"Received file: {file.filename}")  # Log the filename of the uploaded file
+        text = await service.process_image_file(file)
+        logging.info(f"Extracted text: {text}")  # Log the extracted text (for debugging purposes)
+        return JSONResponse(content={"text": text})
+    except Exception as e:
+        logging.error(f"Error processing the image: {e}")
+        raise HTTPException(status_code=500, detail="Error processing the image")
+
 
 @app.websocket('/ws')
 async def post_feed(websocket: WebSocket):

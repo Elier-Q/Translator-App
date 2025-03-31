@@ -5,6 +5,7 @@ import IconButton from "./IconButton";
 import { shareAsync } from "expo-sharing";
 import { saveToLibraryAsync } from "expo-media-library";
 import axios from 'axios';
+import { FetchResult } from "react-native";
 import Animated, {
   FadeIn,
   FadeOut,
@@ -20,22 +21,42 @@ const backendUrl = 'http://10.108.69.231:8000/image-file';
 const sendImageToServer = async (imageUri: string) => {
   try {
     const formData = new FormData();
-    formData.append('photo', {
+
+    const file = {
       uri: imageUri,
-      blob: Blob,
-    } as any);
-    const res = await axios.post(backendUrl, {image: formData}, {
-			headers: {
-				"Content-Type": "application/json",
-				// "Content-Type": "multipart/form-data",
-			},
-		});
-    //const response = await axios.post(backendUrl, formData);
-    console.log('Extracted text from image:', res.data.text);
-    Alert.alert(res.data.text);
-  } catch(error){
-    console.error('Error:', error);
-    Alert.alert("error");
+      type: 'image/jpeg',
+      name: 'uploaded-photo.jpg',  // Provide a filename
+    } as any;
+
+    formData.append('file', file);
+
+    const response = await fetch(backendUrl, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        // Do not manually set 'Content-Type' for FormData
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Server error:', errorData);
+      throw new Error(`Upload failed with status ${response.status}: ${JSON.stringify(errorData)}`);
+    }
+
+    const data = await response.json();
+    console.log('Extracted text:', data.text);
+    Alert.alert(data.text);
+  } catch (error: unknown) {
+    // Type assertion to ensure error is an instance of Error
+    if (error instanceof Error) {
+      console.error('Upload failed:', error.message);
+      Alert.alert('Upload error: ' + error.message);
+    } else {
+      // If the error is not of type 'Error', log it as a general message
+      console.error('Upload failed with an unknown error:', error);
+      Alert.alert('Upload error: Unknown error');
+    }
   }
 };
 

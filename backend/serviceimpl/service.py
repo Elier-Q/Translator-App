@@ -11,6 +11,7 @@ import pytesseract
 from base64 import b64decode , b64encode
 import os
 import re
+from fastapi import HTTPException
 from urllib.parse import urlparse
 
 
@@ -31,6 +32,7 @@ async def process_image_uri(uri: str):
         else:
             gray_frame = image
 
+        '''
         blurred_frame = cv2.GaussianBlur(gray_frame , (5,5) , 0)
         threshold_frame = cv2.adaptiveThreshold(
             blurred_frame ,
@@ -41,6 +43,7 @@ async def process_image_uri(uri: str):
         )
         kernel = np.ones((3,3) , np.uint8)
         cleaned_frame = cv2.morphologyEx(threshold_frame , cv2.MORPH_CLOSE , kernel)
+        '''
 
         text = pytesseract.image_to_string(cleaned_frame , config='--psm 6')
         text = re.sub('\n' , '' , text)
@@ -50,41 +53,33 @@ async def process_image_uri(uri: str):
         logging.error(f"Error processing the image: {e}")
         return "Error processing the image"
 
-async def process_image_file(file: UploadFile = File()):
+async def process_image_file(file: UploadFile):
     try:
+        content = await file.read()  # Read the file content
+        logging.info("File read successfully.")  # Log file read success
 
-        content = await file.read()
-
+        # Open the image using PIL
         image = Image.open(io.BytesIO(content))
+        if image is None:
+            raise ValueError("Failed to open image")
+        logging.info(f"Image opened: {file.filename}")
+
         image = np.array(image)
 
-        # convert rgb to bgr
+        # Convert image to grayscale if it's an RGB image
         if len(image.shape) == 3:
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         else:
             gray_frame = image
 
-        '''
-        blurred_frame = cv2.GaussianBlur(gray_frame , (5,5) , 0)
-        threshold_frame = cv2.adaptiveThreshold(
-            blurred_frame ,
-            255 ,
-            cv2.ADAPTIVE_THRESH_GAUSSIAN_C , 
-            cv2.THRESH_BINARY ,
-            11,2
-        )
-        kernel = np.ones((3,3) , np.uint8)
-        cleaned_frame = cv2.morphologyEx(threshold_frame , cv2.MORPH_CLOSE , kernel)'
-        '''
-
+        # Use pytesseract to extract text
         text = pytesseract.image_to_string(gray_frame)
-        text = re.sub('\n' , '' , text)
+        text = re.sub(r'\n', ' ', text)  # Clean up newlines
         return text
-
     except Exception as e:
         logging.error(f"Error processing the image: {e}")
-        return "Error processing the image"
+        raise HTTPException(status_code=500, detail="Error processing the image")
 
 async def process_feed(image_bytes: bytes):
 

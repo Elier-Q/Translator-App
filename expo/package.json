@@ -39,6 +39,7 @@
     "expo-system-ui": "~4.0.8",
     "expo-video": "~2.0.6",
     "expo-web-browser": "~14.0.2",
+    "fetch": "^1.1.0",
     "react": "18.3.1",
     "react-axios": "^2.0.6",
     "react-dom": "18.3.1",
