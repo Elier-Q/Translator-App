@@ -69,6 +69,7 @@ async def process_image_file(file: UploadFile):
             raise HTTPException(status_code=400, detail="Invalid image file")
 
         # Flip image horizontally
+        img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
 
         # Convert to NumPy array
         image = np.array(img)
