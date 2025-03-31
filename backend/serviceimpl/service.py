@@ -50,7 +50,7 @@ async def process_image_uri(uri: str):
         logging.error(f"Error processing the image: {e}")
         return "Error processing the image"
 
-async def process_image_file(file: UploadFile = File()):
+async def process_image_file(file: dict):
     try:
         
         content = await file.read()

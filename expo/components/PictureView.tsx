@@ -18,18 +18,18 @@ interface PictureViewProps {
 }
 const backendUrl = 'http://10.108.69.231:8000/image-file';
 const sendImageToServer = async (imageUri: string) => {
-  try{
+  try {
     const formData = new FormData();
     formData.append('photo', {
       uri: imageUri,
       type: '.jpg',
       name: 'picTaken.jpg',
     } as any);
-    
+
     const response = await axios.post(backendUrl, formData);
     console.log('Extracted text from image:', response.data.text);
     Alert.alert(response.data.text);
-  } catch(error){
+  } catch (error) {
     console.error('Error:', error);
     Alert.alert("error");
   }
@@ -63,15 +63,15 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
             //const data = { image_base64: imageBase64Uri };
 
             // Use Axios to send a POST request to FastAPI
-          /*  axios.post(backendUrl, { uri : imageBase64Uri })
-              .then(response => {
-                console.log('Extracted text from image:', response.data.text);
-                Alert.alert(response.data.text);
-              })
-              .catch(error => {
-                console.error('Error:', error);
-                Alert.alert("error");
-              }); */
+            /*  axios.post(backendUrl, { uri : imageBase64Uri })
+                .then(response => {
+                  console.log('Extracted text from image:', response.data.text);
+                  Alert.alert(response.data.text);
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                  Alert.alert("error");
+                }); */
             Alert.alert("✅ Picture saved!");
           }}
           iosName={"arrow.down"}
@@ -80,10 +80,10 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
         <IconButton
           onPress={async () => {
             Alert.alert("Square button selected press ok and wait for feedback");
-            if(picture){
+            if (picture) {
               await sendImageToServer(picture);
             }
-            else{
+            else {
               Alert.alert('No image selected');
             }
             setPicture("")
