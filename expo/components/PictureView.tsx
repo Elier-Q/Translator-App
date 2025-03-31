@@ -17,7 +17,7 @@ interface PictureViewProps {
   picture: string;
   setPicture: React.Dispatch<React.SetStateAction<string>>;
 }
-const backendUrl = 'http://10.108.69.231:8000/image-file';
+const backendUrl = 'http://127.0.0.1:8000/image-file';
 interface ErrorWithMessage {
   message: string;
 }
