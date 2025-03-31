@@ -29,7 +29,7 @@ class ImageRequest(BaseModel):
 async def post_image_uri(request: ImageRequest):
     return await service.process_image_uri(uri=request.uri)
 @app.post('/image-file')
-async def post_image_file(file: UploadFile = File()):
+async def post_image_file(file: dict):
     return await service.process_image_file(file)
 
 @app.websocket('/ws')
