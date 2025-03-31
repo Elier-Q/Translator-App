@@ -43,12 +43,12 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
             //const data = { image_base64: imageBase64Uri };
 
             // Use Axios to send a POST request to FastAPI
-            axios.post(backendUrl, {uri: imageBase64Uri})
+            axios.post(backendUrl, { uri: imageBase64Uri })
               .then(response => {
                 console.log('Extracted text from image:', response.data.text);
                 Alert.alert(response.data.text);
               })
-            .catch(error => {
+              .catch(error => {
                 console.error('Error:', error);
                 Alert.alert("error");
               });
@@ -103,5 +103,5 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
       />
     </Animated.View>
   );
-  
+
 }

@@ -5,23 +5,29 @@ from pydantic import Base64Bytes
 from typing import List
 import serviceimpl.service as service
 from starlette.websockets import WebSocket
-import requests
+from pydantic import BaseModel
 
 
 app = FastAPI()
 
 origins = [
-    "http://127.0.0.1:8000"
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+    "http://10.108.69.231:8000"
 ]
 app.add_middleware(CORSMiddleware , 
-                   allow_origins=["*"] , 
+                   allow_origins=origins , 
                    allow_credentials=True , 
                    allow_methods=["*"] , 
                    allow_headers=["*"])
 
+
+class ImageRequest(BaseModel):
+    uri: str
+
 @app.post('/image-uri')
-async def post_image_uri(uri: str):
-    return await service.process_image_uri(uri=uri)
+async def post_image_uri(request: ImageRequest):
+    return await service.process_image_uri(uri=request.uri)
 @app.post('/image-file')
 async def post_image_file(file: UploadFile = File()):
     return await service.process_image_file(file)
