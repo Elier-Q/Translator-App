@@ -11,6 +11,7 @@ import pytesseract
 from base64 import b64decode , b64encode
 import os
 import re
+from urllib.parse import urlparse
 
 
 pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesseract.exe'
@@ -18,7 +19,10 @@ pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesserac
 async def process_image_uri(uri: str):
     try:
 
-        image = Image.open(uri)
+        parsed_uri = urlparse(uri)
+        path = parsed_uri.path
+
+        image = Image.open(path)
         image = np.array(image)
 
         # convert rgb to bgr
