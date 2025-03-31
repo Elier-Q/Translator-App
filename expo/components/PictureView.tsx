@@ -22,13 +22,18 @@ const sendImageToServer = async (imageUri: string) => {
     const formData = new FormData();
     formData.append('photo', {
       uri: imageUri,
-      type: '.jpg',
+      type: 'image/jpeg',
       name: 'picTaken.jpg',
     } as any);
-    
-    const response = await axios.post(backendUrl, formData);
-    console.log('Extracted text from image:', response.data.text);
-    Alert.alert(response.data.text);
+    const res = await axios.post(backendUrl, {image: formData}, {
+			headers: {
+				"Content-Type": "application/json",
+				// "Content-Type": "multipart/form-data",
+			},
+		});
+    //const response = await axios.post(backendUrl, formData);
+    console.log('Extracted text from image:', res.data.text);
+    Alert.alert(res.data.text);
   } catch(error){
     console.error('Error:', error);
     Alert.alert("error");
