@@ -1,10 +1,10 @@
 import uvicorn
-from fastapi import FastAPI , File , UploadFile
+from fastapi import FastAPI , File , UploadFile, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import Base64Bytes
 from typing import List
 import serviceimpl.service as service
-from websocket import WebSocket
+from starlette.websockets import WebSocket
 import requests
 
 
@@ -19,21 +19,23 @@ app.add_middleware(CORSMiddleware ,
                    allow_methods=["*"] , 
                    allow_headers=["*"])
 
-
-@app.post('/image')
-async def post_image(file: UploadFile = File()):
-    return await service.process_image(file)
+@app.post('/image-uri')
+async def post_image_uri(uri: str):
+    return await service.process_image_uri(uri=uri)
+@app.post('/image-file')
+async def post_image_file(file: UploadFile = File()):
+    return await service.process_image_file(file)
 
 @app.websocket('/ws')
 async def post_feed(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
-            frame = await websocket.recv()
-            text = service.process_feed(frame)
+            frame = await websocket.receive_bytes()
+            text = await service.process_feed(frame)
             await websocket.send_text(text)
             
-    except websocket.close:
+    except WebSocketDisconnect:
         print("Disconnect")
 
 @app.get('/langcode')
@@ -41,7 +43,7 @@ def get_langcode(language: str):
     return service.langcode(language)
 @app.post('/translate')
 async def post_translation(original_text: str , target_language: str):
-    target_lang_code = get_langcode(target_language)
+    target_lang_code = service.langcode(target_language)
     return service.translate(original_text , target_lang_code)
 
 if __name__ == "__main__":

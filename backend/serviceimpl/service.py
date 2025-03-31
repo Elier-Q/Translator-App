@@ -8,10 +8,38 @@ import logging
 from fastapi import UploadFile, File
 from PIL import Image
 import pytesseract
+from base64 import b64decode , b64encode
+import os
+import re
+
 
 pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesseract.exe'
 
-async def process_image(file: UploadFile = File()):
+async def process_image_uri(uri: str):
+    try:
+
+        header , encoded = uri.split('base64,' , 1)
+        content = b64decode(encoded)
+
+        image = Image.open(io.BytesIO(content))
+        image = np.array(image)
+
+        # convert rgb to bgr
+        if len(image.shape) == 3:
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        else:
+            gray_frame = image
+
+        text = pytesseract.image_to_string(gray_frame)
+        text = re.sub('\n' , '')
+        return text
+
+    except Exception as e:
+        logging.error(f"Error processing the image: {e}")
+        return "Error processing the image"
+
+async def process_image_file(file: UploadFile = File()):
     try:
 
         content = await file.read()
@@ -45,7 +73,7 @@ async def process_feed(image_bytes: bytes):
         else:
             gray_frame = image
 
-        text = pytesseract.image_to_string(gray_frame)
+        text = await pytesseract.image_to_string(gray_frame)
         return text
 
     except Exception as e:
@@ -56,8 +84,6 @@ def langcode(lang: str):
 
     url = 'https://api-free.deepl.com/v2/languages'
     headers = {"Authorization": "DeepL-Auth-Key 86cead83-acdf-4c04-b299-47afe2d50034:fx"}  # Correct API key format
-
-    response = requests.get(url, headers=headers)
 
     try:
         response = requests.get(url , headers=headers)
