@@ -5,7 +5,7 @@ from pydantic import Base64Bytes
 from typing import List
 import serviceimpl.service as service
 #from websocket import WebSocket
-import deepl
+import requests
 
 
 app = FastAPI()
@@ -37,9 +37,12 @@ async def post_feed(websocket: WebSocket):
         print("Disconnect")
 '''
 
+@app.get('/langcode')
+def get_langcode(language: str):
+    return service.langcode(language)
 @app.post('/translate')
 async def post_translation(original_text: str , target_lang_code: str):
-    return await service.translate(original_text , service.langcode(target_lang_code))
+    return service.translate(original_text , target_lang_code)
 
 if __name__ == "__main__":
     uvicorn.run(app , host="0.0.0.0" , port=8000)
