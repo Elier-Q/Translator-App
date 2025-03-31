@@ -52,8 +52,9 @@ async def process_image_uri(uri: str):
 
 async def process_image_file(file: dict):
     try:
-        
-        content = await file.read()
+
+        #content = await file.read()
+        content = await file['file'].read()
 
         image = Image.open(io.BytesIO(content))
         image = np.array(image)
