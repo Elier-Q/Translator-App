@@ -18,7 +18,8 @@ interface PictureViewProps {
 
 const sendImageToServer = async (imageUri: string) => {
   try{
-    encoding: FileSystem.readAsStringAsync(imageUri, {encoding: FileSystem.EncodingType.Base64,});
+    const base64String = await FileSystem.readAsStringAsync(imageUri, {encoding: FileSystem.EncodingType.Base64,})
+    //encoding: FileSystem.readAsStringAsync(imageUri, {encoding: FileSystem.EncodingType.Base64,});
     const backendUrl = 'http://10.108.69.231:8000/image-uri';
 
     const data = {uri: 'data:image/jpeg;base64,${base64String}'};
