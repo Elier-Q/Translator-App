@@ -22,8 +22,7 @@ const sendImageToServer = async (imageUri: string) => {
     const formData = new FormData();
     formData.append('photo', {
       uri: imageUri,
-      type: 'image/jpeg',
-      name: 'picTaken.jpg',
+      blob: Blob,
     } as any);
     const res = await axios.post(backendUrl, {image: formData}, {
 			headers: {
