@@ -33,7 +33,7 @@ async def process_image_uri(uri: str):
             gray_frame = image
 
         text = pytesseract.image_to_string(gray_frame)
-        text = re.sub('\n' , '' , text)
+        text = text.replace('\n' , '')
         return text
 
     except Exception as e:
