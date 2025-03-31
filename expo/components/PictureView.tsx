@@ -25,57 +25,27 @@ interface ErrorWithMessage {
 const sendImageToServer = async (imageUri: string) => {
   try {
     const formData = new FormData();
-
-    // Ensure imageUri is a valid URI and fetch the image as a Blob
-    const response = await fetch(imageUri);
-    
-    // Check if response is valid
-    if (!response.ok) {
-      console.error('Failed to fetch the image from the URI:', imageUri);
-      throw new Error('Failed to fetch image');
-    }
-
-    const blob = await response.blob(); // Convert imageUri to Blob
-
-    // Check the blob type
-    console.log('Blob:', blob);
-
-    // Create a File object using the Blob
-    const file = new File([blob], 'uploaded-photo.jpg', { type: 'image/jpeg' });
-
-    // Log the File object to confirm it's being created correctly
-    console.log('Created File:', file);
-
-    // Append the file to FormData with the field name 'file'
+    const file = {
+      uri: imageUri,
+      type: 'image/jpeg',
+      name: 'uploaded-photo.jpg',
+    } as any;
     formData.append('file', file);
 
-    // Log FormData contents
-    console.log('Sending FormData:', formData);
+    console.log('Sending FormData:', formData); // Check the contents of FormData
 
-    // Send the FormData to the server using fetch
-    const responseFromServer = await fetch(backendUrl, {
+    const response = await fetch(backendUrl, {
       method: 'POST',
       body: formData,
     });
 
-    // Check the server's response
-    if (!responseFromServer.ok) {
-      const errorData = await responseFromServer.json();
-      console.error('Server Error:', errorData);
-      throw new Error(`Server error with status ${responseFromServer.status}: ${JSON.stringify(errorData)}`);
-    }
-
-    const data = await responseFromServer.json();
+    console.log('Response status:', response.status);
+    const data = await response.json();
     console.log('Extracted text:', data.text);
     Alert.alert(data.text);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error('Upload failed:', error.message);
-      Alert.alert('Upload error: ' + error.message);
-    } else {
-      console.error('Upload failed with unknown error:', error);
-      Alert.alert('An unknown error occurred during upload.');
-    }
+  } catch (error) {
+    console.error('Upload failed:', error);
+    Alert.alert('Upload error');
   }
 };
 
