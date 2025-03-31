@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "305HackathonSP25",
-    "slug": "305HackathonSP25",
+    "name": "CamTest",
+    "slug": "CamTest",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -9,11 +9,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.quesadon.305HackathonSP25",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
@@ -41,14 +37,6 @@
     ],
     "experiments": {
       "typedRoutes": true
-    },
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "b873b50d-e71b-46a2-a014-3808dcc97bfd"
-      }
     }
   }
 }
