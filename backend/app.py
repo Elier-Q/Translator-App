@@ -10,13 +10,11 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import logging
 
-
 app = FastAPI()
 
 origins = [
     "http://127.0.0.1:8000",
     "http://localhost:3000",
-    "http://10.108.69.231:8000"
 ]
 app.add_middleware(CORSMiddleware , 
                    allow_origins=origins , 

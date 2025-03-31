@@ -2,7 +2,7 @@ import requests
 
 def langcode(lang: str):
     url = "https://api-free.deepl.com/v2/languages"
-    headers = {"Authorization": "DeepL-Auth-Key 86cead83-acdf-4c04-b299-47afe2d50034:fx"}
+    headers = {"Authorization": "DeepL-Auth-Key"}
 
     try:
         response = requests.get(url, headers=headers, timeout=5)  

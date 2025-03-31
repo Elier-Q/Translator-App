@@ -119,7 +119,7 @@ async def process_feed(image_bytes: bytes):
 def langcode(lang: str):
 
     url = 'https://api-free.deepl.com/v2/languages'
-    headers = {"Authorization": "DeepL-Auth-Key 86cead83-acdf-4c04-b299-47afe2d50034:fx"}  # Correct API key format
+    headers = {"Authorization": "DeepL-Auth-Key"}  # Correct API key format
 
     try:
         response = requests.get(url , headers=headers)
@@ -136,7 +136,7 @@ def langcode(lang: str):
     return None
 def translate(text: str , target: str):
     
-    translator = deepl.Translator('86cead83-acdf-4c04-b299-47afe2d50034:fx')
+    translator = deepl.Translator('API_KEY')
 
     return translator.translate_text(text , target_lang=target)
 
