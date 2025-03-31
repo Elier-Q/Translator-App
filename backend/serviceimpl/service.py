@@ -52,29 +52,40 @@ async def process_image_uri(uri: str):
 
 async def process_image_file(file: UploadFile):
     try:
-        content = await file.read()  # Read the file content
-        logging.info("File read successfully.")  # Log file read success
+        # Validate file type
+        if not file.content_type.startswith("image/"):
+            raise HTTPException(status_code=400, detail="Invalid file type")
 
-        # Open the image using PIL
+        content = await file.read()  # Read file
+        logging.info("File read successfully.")
+
+        # Open image
         img = Image.open(io.BytesIO(content))
-        if img is None:
-            raise ValueError("Failed to open image")
         logging.info(f"Image opened: {file.filename}")
 
-        image = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
-        image = np.array(image)
+        # Flip image horizontally
+        img = img.transpose(Image.FLIP_LEFT_RIGHT)
 
-        # Convert image to grayscale if it's an RGB image
-        if len(image.shape) == 3:
+        # Convert to NumPy array
+        image = np.array(img)
+
+        # Convert to grayscale
+        if len(image.shape) == 3 and image.shape[2] == 3:
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         else:
             gray_frame = image
 
-        # Use pytesseract to extract text
-        text = pytesseract.image_to_string(gray_frame)
-        text = re.sub(r'\n', ' ', text)  # Clean up newlines
+        # OCR extraction
+        try:
+            text = pytesseract.image_to_string(gray_frame)
+            text = re.sub(r'\n', ' ', text)
+        except Exception as e:
+            logging.error(f"OCR error: {e}")
+            raise HTTPException(status_code=500, detail="Error extracting text")
+
         return text
+
     except Exception as e:
         logging.error(f"Error processing the image: {e}")
         raise HTTPException(status_code=500, detail="Error processing the image")
