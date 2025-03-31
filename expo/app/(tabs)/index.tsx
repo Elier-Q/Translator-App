@@ -31,7 +31,7 @@ export default function HomeScreen() {
   const [cameraZoom, setCameraZoom] = React.useState<number>(0);
   const [picture, setPicture] = React.useState<string>(""); // "https://picsum.photos/seed/696/3000/2000"
   const [video, setVideo] = React.useState<string>(
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    ""
   ); //  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
 
   const [isBrowsing, setIsBrowsing] = React.useState<boolean>(false);

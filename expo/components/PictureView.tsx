@@ -53,12 +53,6 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
       >
         <IconButton
           onPress={async () => {
-            if(picture){
-              await sendImageToServer(picture);
-            }
-            else{
-              Alert.alert('No image selected');
-            }
             saveToLibraryAsync(picture);
             const imageBase64Uri = picture;  // Example Base64 string
 
@@ -84,7 +78,15 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
           androidName="close"
         />
         <IconButton
-          onPress={() => setPicture("")}
+          onPress={async () => {
+            if(picture){
+              await sendImageToServer(picture);
+            }
+            else{
+              Alert.alert('No image selected');
+            }
+            setPicture("")
+          }}
           iosName={"square.dashed"}
           androidName="close"
         />
