@@ -18,12 +18,14 @@ interface PictureViewProps {
 
 const sendImageToServer = async (imageUri: string) => {
   try{
-    const base64String = await FileSystem.readAsStringAsync(imageUri, {encoding: FileSystem.EncodingType.Base64,})
+    const base64String = await FileSystem.readAsStringAsync(imageUri, {encoding: FileSystem.EncodingType.Base64,});
     //encoding: FileSystem.readAsStringAsync(imageUri, {encoding: FileSystem.EncodingType.Base64,});
     const backendUrl = 'http://10.108.69.231:8000/image-uri';
 
-    const data = {uri: 'data:image/jpeg;base64,${base64String}'};
-
+    //var dataV = 'data:image/jpeg;base64,';
+    //dataV += base64String;
+    const data = {uri: base64String};
+    
     const response = await axios.post(backendUrl, data);
     console.log('Extracted text from image:', response.data.text);
     Alert.alert(response.data.text);
