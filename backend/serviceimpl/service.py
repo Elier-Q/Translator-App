@@ -31,7 +31,18 @@ async def process_image_uri(uri: str):
         else:
             gray_frame = image
 
-        text = pytesseract.image_to_string(gray_frame)
+        blurred_frame = cv2.GaussianBlur(gray_frame , (5,5) , 0)
+        threshold_frame = cv2.adaptiveThreshold(
+            blurred_frame ,
+            255 ,
+            cv2.ADAPTIVE_THRESH_GAUSSIAN_C , 
+            cv2.THRESH_BINARY ,
+            11,2
+        )
+        kernel = np.ones((3,3) , np.uint8)
+        cleaned_frame = cv2.morphologyEx(threshold_frame , cv2.MORPH_CLOSE , kernel)
+
+        text = pytesseract.image_to_string(cleaned_frame , config='--psm 6')
         text = re.sub('\n' , '' , text)
         return text
 
