@@ -18,8 +18,8 @@ pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesserac
 async def process_image_uri(uri: str):
     try:
 
-        header , encoded = uri.split('base64,' , 1)
-        content = b64decode(encoded)
+        #header , encoded = uri.split('base64,' , 1)
+        content = b64decode(uri)
 
         image = Image.open(io.BytesIO(content))
         image = np.array(image)
@@ -32,7 +32,7 @@ async def process_image_uri(uri: str):
             gray_frame = image
 
         text = pytesseract.image_to_string(gray_frame)
-        text = re.sub('\n' , '')
+        text = re.sub('\n' , '' , text)
         return text
 
     except Exception as e:
