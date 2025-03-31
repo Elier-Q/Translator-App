@@ -18,47 +18,73 @@ interface PictureViewProps {
   setPicture: React.Dispatch<React.SetStateAction<string>>;
 }
 const backendUrl = 'http://10.108.69.231:8000/image-file';
+interface ErrorWithMessage {
+  message: string;
+}
+
 const sendImageToServer = async (imageUri: string) => {
   try {
     const formData = new FormData();
 
-    const file = {
-      uri: imageUri,
-      type: 'image/jpeg',
-      name: 'uploaded-photo.jpg',  // Provide a filename
-    } as any;
-
-    formData.append('file', file);
-
-    const response = await fetch(backendUrl, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        // Do not manually set 'Content-Type' for FormData
-      },
-    });
-
+    // Ensure imageUri is a valid URI and fetch the image as a Blob
+    const response = await fetch(imageUri);
+    
+    // Check if response is valid
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Server error:', errorData);
-      throw new Error(`Upload failed with status ${response.status}: ${JSON.stringify(errorData)}`);
+      console.error('Failed to fetch the image from the URI:', imageUri);
+      throw new Error('Failed to fetch image');
     }
 
-    const data = await response.json();
+    const blob = await response.blob(); // Convert imageUri to Blob
+
+    // Check the blob type
+    console.log('Blob:', blob);
+
+    // Create a File object using the Blob
+    const file = new File([blob], 'uploaded-photo.jpg', { type: 'image/jpeg' });
+
+    // Log the File object to confirm it's being created correctly
+    console.log('Created File:', file);
+
+    // Append the file to FormData with the field name 'file'
+    formData.append('file', file);
+
+    // Log FormData contents
+    console.log('Sending FormData:', formData);
+
+    // Send the FormData to the server using fetch
+    const responseFromServer = await fetch(backendUrl, {
+      method: 'POST',
+      body: formData,
+    });
+
+    // Check the server's response
+    if (!responseFromServer.ok) {
+      const errorData = await responseFromServer.json();
+      console.error('Server Error:', errorData);
+      throw new Error(`Server error with status ${responseFromServer.status}: ${JSON.stringify(errorData)}`);
+    }
+
+    const data = await responseFromServer.json();
     console.log('Extracted text:', data.text);
     Alert.alert(data.text);
   } catch (error: unknown) {
-    // Type assertion to ensure error is an instance of Error
     if (error instanceof Error) {
       console.error('Upload failed:', error.message);
       Alert.alert('Upload error: ' + error.message);
     } else {
-      // If the error is not of type 'Error', log it as a general message
-      console.error('Upload failed with an unknown error:', error);
-      Alert.alert('Upload error: Unknown error');
+      console.error('Upload failed with unknown error:', error);
+      Alert.alert('An unknown error occurred during upload.');
     }
   }
 };
+
+
+
+// Type guard function
+function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
+  return (error as ErrorWithMessage).message !== undefined;
+}
 
 export default function PictureView({ picture, setPicture }: PictureViewProps) {
   return (
