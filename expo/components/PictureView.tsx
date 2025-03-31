@@ -3,6 +3,7 @@ import { Alert, View } from "react-native";
 import IconButton from "./IconButton";
 import { shareAsync } from "expo-sharing";
 import { saveToLibraryAsync } from "expo-media-library";
+import axios from 'axios';
 import Animated, {
   FadeIn,
   FadeOut,
@@ -13,6 +14,7 @@ interface PictureViewProps {
   picture: string;
   setPicture: React.Dispatch<React.SetStateAction<string>>;
 }
+
 export default function PictureView({ picture, setPicture }: PictureViewProps) {
   return (
     <Animated.View
@@ -32,6 +34,22 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
         <IconButton
           onPress={async () => {
             saveToLibraryAsync(picture);
+            const imageBase64Uri = picture;  // Example Base64 string
+
+            // FastAPI backend URL
+            const backendUrl = 'http://127.0.0.1:8000/image-uri';
+
+            // Prepare the data to send (Base64 URI)
+            //const data = { image_base64: imageBase64Uri };
+
+            // Use Axios to send a POST request to FastAPI
+            axios.post(backendUrl, imageBase64Uri)
+              .then(response => {
+                console.log('Extracted text from image:', response.data.text);
+              })
+            .catch(error => {
+                console.error('Error:', error);
+              });
             Alert.alert("✅ Picture saved!");
           }}
           iosName={"arrow.down"}
@@ -83,4 +101,5 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
       />
     </Animated.View>
   );
+  
 }
