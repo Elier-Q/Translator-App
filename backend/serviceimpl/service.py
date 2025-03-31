@@ -54,40 +54,46 @@ async def process_image_uri(uri: str):
 async def process_image_file(file: UploadFile):
     try:
         # Validate file type
-        if not file.content_type.startswith("image/"):
+        if not file.content_type or not file.content_type.startswith("image/"):
             raise HTTPException(status_code=400, detail="Invalid file type")
 
         content = await file.read()  # Read file
         logging.info("File read successfully.")
 
         # Open image
-        img = Image.open(io.BytesIO(content))
-        logging.info(f"Image opened: {file.filename}")
+        try:
+            img = Image.open(io.BytesIO(content))
+            logging.info(f"Image opened: {file.filename}")
+        except Exception as e:
+            logging.error(f"Failed to open image: {e}")
+            raise HTTPException(status_code=400, detail="Invalid image file")
 
         # Flip image horizontally
-        img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+        img = img.transpose(Image.FLIP_LEFT_RIGHT)
 
         # Convert to NumPy array
         image = np.array(img)
 
         # Convert to grayscale
         if len(image.shape) == 3 and image.shape[2] == 3:
-            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-            gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            gray_frame = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         else:
             gray_frame = image
 
         # OCR extraction
         try:
             text = pytesseract.image_to_string(gray_frame)
+            text = re.sub(r'\n+', ' ', text.strip())  # Remove excessive newlines
         except Exception as e:
             logging.error(f"OCR error: {e}")
             raise HTTPException(status_code=500, detail="Error extracting text")
 
-        return text
+        return {"filename": file.filename, "extracted_text": text}
 
+    except HTTPException:
+        raise  # Reraise expected HTTP errors
     except Exception as e:
-        logging.error(f"Error processing the image: {e}")
+        logging.error(f"Unexpected error processing the image: {e}")
         raise HTTPException(status_code=500, detail="Error processing the image")
 
 
