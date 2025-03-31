@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import Base64Bytes
 from typing import List
 import serviceimpl.service as service
-#from websocket import WebSocket
+from websocket import WebSocket
 import requests
 
 
@@ -19,11 +19,11 @@ app.add_middleware(CORSMiddleware ,
                    allow_methods=["*"] , 
                    allow_headers=["*"])
 
+
 @app.post('/image')
 async def post_image(file: UploadFile = File()):
     return await service.process_image(file)
 
-'''
 @app.websocket('/ws')
 async def post_feed(websocket: WebSocket):
     await websocket.accept()
@@ -35,7 +35,6 @@ async def post_feed(websocket: WebSocket):
             
     except websocket.close:
         print("Disconnect")
-'''
 
 @app.get('/langcode')
 def get_langcode(language: str):

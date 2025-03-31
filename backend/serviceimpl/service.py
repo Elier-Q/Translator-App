@@ -19,7 +19,7 @@ async def process_image(file: UploadFile = File()):
         image = Image.open(io.BytesIO(content))
         image = np.array(image)
 
-        # Convert RGB to BGR (since OpenCV uses BGR format)
+        # convert rgb to bgr
         if len(image.shape) == 3:
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -33,16 +33,24 @@ async def process_image(file: UploadFile = File()):
         logging.error(f"Error processing the image: {e}")
         return "Error processing the image"
 
-
 async def process_feed(image_bytes: bytes):
 
-    image = np.array(Image.open(io.BytesIO(image_bytes)))
+    try:
+        image = np.array(Image.open(io.BytesIO(image_bytes)))
 
-    gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            # convert rgb to bgr
+        if len(image.shape) == 3:
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        else:
+            gray_frame = image
 
-    text = pytesseract.image_to_string(gray_frame)
+        text = pytesseract.image_to_string(gray_frame)
+        return text
 
-    return text
+    except Exception as e:
+        logging.error(f"Error processing the image: {e}")
+        return "Error processing the image"
 
 def langcode(lang: str):
 
