@@ -45,7 +45,7 @@ async def process_image_uri(uri: str):
         cleaned_frame = cv2.morphologyEx(threshold_frame , cv2.MORPH_CLOSE , kernel)
         '''
 
-        text = pytesseract.image_to_string(cleaned_frame , config='--psm 6')
+        text = pytesseract.image_to_string(gray_frame , config='--psm 6')
         text = re.sub('\n' , '' , text)
         return text
 
