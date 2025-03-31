@@ -1,4 +1,5 @@
 import { Image } from "expo-image";
+import * as FileSystem from 'expo-file-system';
 import { Alert, View } from "react-native";
 import IconButton from "./IconButton";
 import { shareAsync } from "expo-sharing";
@@ -14,6 +15,22 @@ interface PictureViewProps {
   picture: string;
   setPicture: React.Dispatch<React.SetStateAction<string>>;
 }
+
+const sendImageToServer = async (imageUri: string) => {
+  try{
+    encoding: FileSystem.readAsStringAsync(imageUri, {encoding: FileSystem.EncodingType.Base64,});
+    const backendUrl = 'http://10.108.69.231:8000/image-uri';
+
+    const data = {uri: 'data:image/jpeg;base64,${base64String}'};
+
+    const response = await axios.post(backendUrl, data);
+    console.log('Extracted text from image:', response.data.text);
+    Alert.alert(response.data.text);
+  } catch(error){
+    console.error('Error:', error);
+    Alert.alert("error");
+  }
+};
 
 export default function PictureView({ picture, setPicture }: PictureViewProps) {
   return (
@@ -33,18 +50,23 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
       >
         <IconButton
           onPress={async () => {
-            Alert.alert('Uri...:' , picture);
+            if(picture){
+              await sendImageToServer(picture);
+            }
+            else{
+              Alert.alert('No image selected');
+            }
             saveToLibraryAsync(picture);
             const imageBase64Uri = picture;  // Example Base64 string
 
             // FastAPI backend URL
-            const backendUrl = 'http://10.108.69.231:8000/image-uri';
+
 
             // Prepare the data to send (Base64 URI)
             //const data = { image_base64: imageBase64Uri };
 
             // Use Axios to send a POST request to FastAPI
-            axios.post(backendUrl, { uri : imageBase64Uri })
+          /*  axios.post(backendUrl, { uri : imageBase64Uri })
               .then(response => {
                 console.log('Extracted text from image:', response.data.text);
                 Alert.alert(response.data.text);
@@ -52,7 +74,7 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
               .catch(error => {
                 console.error('Error:', error);
                 Alert.alert("error");
-              });
+              }); */
             Alert.alert("✅ Picture saved!");
           }}
           iosName={"arrow.down"}
