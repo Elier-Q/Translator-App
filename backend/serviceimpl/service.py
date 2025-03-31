@@ -56,11 +56,12 @@ async def process_image_file(file: UploadFile):
         logging.info("File read successfully.")  # Log file read success
 
         # Open the image using PIL
-        image = Image.open(io.BytesIO(content))
-        if image is None:
+        img = Image.open(io.BytesIO(content))
+        if img is None:
             raise ValueError("Failed to open image")
         logging.info(f"Image opened: {file.filename}")
 
+        image = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
         image = np.array(image)
 
         # Convert image to grayscale if it's an RGB image
