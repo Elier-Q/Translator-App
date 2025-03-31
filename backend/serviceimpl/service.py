@@ -76,7 +76,7 @@ async def process_image_file(file: UploadFile):
         img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
 
         # Convert to NumPy array
-        image = np.array(img)
+        image = np.ascontiguousarray(img)
 
         # Convert to grayscale
         if len(image.shape) == 3 and image.shape[2] == 3:
