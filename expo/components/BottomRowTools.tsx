@@ -1,8 +1,10 @@
-import { StyleSheet, TouchableOpacity, View} from "react-native";
+import { StyleSheet, TouchableOpacity, View , Image} from "react-native";
 import IconButton from "./IconButtons";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
-import { CameraMode } from "expo-camera";
+import { CameraMode , Camera, CameraView} from "expo-camera";
+import 'expo-dev-client';
+import * as MediaLibrary from 'expo-media-library'
 
 export default function BottomRowTools(){
     return(
