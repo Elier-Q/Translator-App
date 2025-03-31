@@ -17,26 +17,8 @@ pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesserac
 
 async def process_image_uri(uri: str):
     try:
-<<<<<<< HEAD
 
         image = Image.open(uri)
-=======
-        '''
-        # Ensure we are only decoding the base64 content, not the prefix
-        if "base64," in uri:
-            uri = uri.split("base64,", 1)[1]  # Remove the data URI scheme 
-        '''
-        
-        # Add padding if necessary
-        missing_padding = len(uri) % 4
-        if missing_padding:
-            uri += "=" * (4 - missing_padding)
-
-        #header , encoded = uri.split('base64,' , 1)
-        content = b64decode(uri)
-
-        image = Image.open(io.BytesIO(content))
->>>>>>> b54ee9fae371c50e3fcb089d4d4d6260c604808a
         image = np.array(image)
 
         # convert rgb to bgr
