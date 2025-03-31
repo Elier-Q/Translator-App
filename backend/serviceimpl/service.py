@@ -17,10 +17,11 @@ pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesserac
 
 async def process_image_uri(uri: str):
     try:
-
+        '''
         # Ensure we are only decoding the base64 content, not the prefix
         if "base64," in uri:
-            uri = uri.split("base64,", 1)[1]  # Remove the data URI scheme
+            uri = uri.split("base64,", 1)[1]  # Remove the data URI scheme 
+        '''
         
         # Add padding if necessary
         missing_padding = len(uri) % 4

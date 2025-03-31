@@ -33,6 +33,7 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
       >
         <IconButton
           onPress={async () => {
+            Alert.alert('Uri...:' , picture);
             saveToLibraryAsync(picture);
             const imageBase64Uri = picture;  // Example Base64 string
 
@@ -43,7 +44,7 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
             //const data = { image_base64: imageBase64Uri };
 
             // Use Axios to send a POST request to FastAPI
-            axios.post(backendUrl, { uri: imageBase64Uri })
+            axios.post(backendUrl, { uri : imageBase64Uri })
               .then(response => {
                 console.log('Extracted text from image:', response.data.text);
                 Alert.alert(response.data.text);
