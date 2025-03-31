@@ -41,7 +41,8 @@ async def post_feed(websocket: WebSocket):
 def get_langcode(language: str):
     return service.langcode(language)
 @app.post('/translate')
-async def post_translation(original_text: str , target_lang_code: str):
+async def post_translation(original_text: str , target_language: str):
+    target_lang_code = get_langcode(target_language)
     return service.translate(original_text , target_lang_code)
 
 if __name__ == "__main__":
