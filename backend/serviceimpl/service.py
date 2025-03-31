@@ -81,7 +81,7 @@ async def process_image_file(file: UploadFile):
 
         # OCR extraction
         try:
-            text = pytesseract.image_to_string(gray_frame)
+            text = pytesseract.image_to_string(gray_frame , lang='eng' , config='--psm 3')
         except Exception as e:
             logging.error(f"OCR error: {e}")
             raise HTTPException(status_code=500, detail="Error extracting text")
