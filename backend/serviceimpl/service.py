@@ -32,7 +32,6 @@ async def process_image_uri(uri: str):
         else:
             gray_frame = image
 
-        '''
         blurred_frame = cv2.GaussianBlur(gray_frame , (5,5) , 0)
         threshold_frame = cv2.adaptiveThreshold(
             blurred_frame ,
@@ -43,10 +42,8 @@ async def process_image_uri(uri: str):
         )
         kernel = np.ones((3,3) , np.uint8)
         cleaned_frame = cv2.morphologyEx(threshold_frame , cv2.MORPH_CLOSE , kernel)
-        '''
 
-        text = pytesseract.image_to_string(gray_frame , config='--psm 6')
-        text = re.sub('\n' , '' , text)
+        text = pytesseract.image_to_string(cleaned_frame , config='--psm 6')
         return text
 
     except Exception as e:
