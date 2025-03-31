@@ -32,6 +32,7 @@ async def post_feed(websocket: WebSocket):
             frame = await websocket.recv()
             text = service.process_feed(frame)
             await websocket.send_text(text)
+            
     except websocket.close:
         print("Disconnect")
 '''
