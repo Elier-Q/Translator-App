@@ -11,22 +11,22 @@ import Animated, {
   LinearTransition,
 } from "react-native-reanimated";
 
+
 interface PictureViewProps {
   picture: string;
   setPicture: React.Dispatch<React.SetStateAction<string>>;
 }
-
+const backendUrl = 'http://10.108.69.231:8000/image-file';
 const sendImageToServer = async (imageUri: string) => {
   try{
-    const base64String = await FileSystem.readAsStringAsync(imageUri, {encoding: FileSystem.EncodingType.Base64,});
-    //encoding: FileSystem.readAsStringAsync(imageUri, {encoding: FileSystem.EncodingType.Base64,});
-    const backendUrl = 'http://10.108.69.231:8000/image-uri';
-
-    //var dataV = 'data:image/jpeg;base64,';
-    //dataV += base64String;
-    const data = {uri: base64String};
+    const formData = new FormData();
+    formData.append('photo', {
+      uri: imageUri,
+      type: '.jpg',
+      name: 'picTaken.jpg',
+    } as any);
     
-    const response = await axios.post(backendUrl, data);
+    const response = await axios.post(backendUrl, formData);
     console.log('Extracted text from image:', response.data.text);
     Alert.alert(response.data.text);
   } catch(error){
@@ -79,6 +79,7 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
         />
         <IconButton
           onPress={async () => {
+            Alert.alert("Square button selected press ok and wait for feedback");
             if(picture){
               await sendImageToServer(picture);
             }
@@ -90,16 +91,7 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
           iosName={"square.dashed"}
           androidName="close"
         />
-        <IconButton
-          onPress={() => setPicture("")}
-          iosName={"circle.dashed"}
-          androidName="close"
-        />
-        <IconButton
-          onPress={() => setPicture("")}
-          iosName={"triangle"}
-          androidName="close"
-        />
+
         <IconButton
           onPress={async () => await shareAsync(picture)}
           iosName={"square.and.arrow.up"}

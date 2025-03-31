@@ -63,7 +63,7 @@ export default function MainRowActions({
         showsHorizontalScrollIndicator={false}
       />
       <TouchableOpacity onPress={handleTakePicture}>
-        <SymbolView
+        <SymbolView 
           name={
             cameraMode === "picture"
               ? "circle"
@@ -103,16 +103,7 @@ export default function MainRowActions({
         contentContainerStyle={{ gap: 2 }}
         showsHorizontalScrollIndicator={false}
       >
-        {[0, 1, 2, 4].map((item) => (
-          <SymbolView
-            key={item}
-            name="face.dashed"
-            size={40}
-            type="hierarchical"
-            tintColor={"white"}
-            // fallback={} TODO: Add a fallback for android
-          />
-        ))}
+        
       </ScrollView>
     </View>
   );
